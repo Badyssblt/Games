@@ -1,0 +1,25 @@
+{
+  "name": "launcher",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "electron": "electron .",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "main": "main.js",
+  "dependencies": {
+    "electron-builder": "^25.1.8",
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "autoprefixer": "^10.4.20",
+    "electron": "^32.2.3",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14",
+    "vite": "^5.4.10"
+  }
+}

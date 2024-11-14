@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9bea0783b1f6c5726208cec1f90df269",
+    "content-hash": "6b3f926a0666976c2c28c74bb0f16b52",
     "packages": [
         {
             "name": "api-platform/doctrine-common",
@@ -6441,58 +6441,6 @@
             "time": "2024-08-30T07:09:40+00:00"
         },
         {
-            "name": "smartinm/mega-php-client",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/smartinm/mega-php-client.git",
-                "reference": "72268cd843172b5e10d392c206deb77629386808"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/smartinm/mega-php-client/zipball/72268cd843172b5e10d392c206deb77629386808",
-                "reference": "72268cd843172b5e10d392c206deb77629386808",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-mcrypt": "*",
-                "ext-openssl": "*",
-                "php": ">=5.3.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "lib/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sergio Martin Morillas",
-                    "email": "smartinmorillas@gmail.com",
-                    "homepage": "https://twitter.com/smartinm"
-                }
-            ],
-            "description": "MEGA API Client Library for PHP.",
-            "homepage": "https://github.com/smartinm/mega-php-client",
-            "keywords": [
-                "api",
-                "client",
-                "mega",
-                "mega.co.nz"
-            ],
-            "support": {
-                "issues": "https://github.com/smartinm/mega-php-client/issues",
-                "source": "https://github.com/smartinm/mega-php-client/tree/master"
-            },
-            "time": "2013-12-29T13:24:13+00:00"
-        },
-        {
             "name": "symfony/asset",
             "version": "v7.1.6",
             "source": {
@@ -11188,9 +11136,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "smartinm/mega-php-client": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -11198,6 +11144,6 @@
         "ext-ctype": "*",
         "ext-iconv": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

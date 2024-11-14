@@ -28,23 +28,35 @@ class FileController extends AbstractController
     public function downloadFile(Request $request, string $fileName): Response
     {
         try {
-            // Créer une réponse en streaming
-            $response = new StreamedResponse(function () use ($fileName) {
-                // Télécharger le fichier depuis Google Drive avec le nom fourni
-                $contentStream = $this->googleDriveService->downloadFileStreamByName($fileName);
+            // Appeler la méthode du service pour obtenir le flux du fichier et sa taille
+            $fileData = $this->googleDriveService->downloadFileStreamByName($fileName);
+            $stream = $fileData['stream'];
+            $fileSize = $fileData['size'];
 
-                // Lire et envoyer le contenu en petits morceaux (par exemple, 1 Mo)
-                while (!$contentStream->eof()) {
-                    echo $contentStream->read(1024 * 1024); // Lire par morceaux de 1 Mo
-                    flush(); // Forcer l'envoi du contenu au client
+            // Créer une réponse en streaming
+            $response = new StreamedResponse(function () use ($stream, $fileSize) {
+                $chunkSize = 1024 * 1024 * 10; // Taille du morceau (1 Mo)
+                $bytesSent = 0;
+
+                flush();
+                // Lire le fichier par morceaux et envoyer chaque morceau
+                while (!$stream->eof()) {
+                    // Lire le prochain morceau
+                    $data = $stream->read($chunkSize);
+                    echo $data;
+                    flush();
+
+                    // Mettre à jour la progression
+                    $bytesSent += strlen($data);
+                    // Cette partie calcule la progression, mais elle ne fait rien de plus ici.
+                    // Le calcul est essentiel mais le client Axios le gérera lui-même.
                 }
             });
 
-            // Définir les en-têtes pour le téléchargement de fichier
+            // Définir les en-têtes pour le téléchargement
             $response->headers->set('Content-Type', 'application/octet-stream');
             $response->headers->set('Content-Disposition', 'attachment; filename="' . $fileName . '"');
-            $response->headers->set('Cache-Control', 'no-cache');
-            $response->headers->set('Content-Transfer-Encoding', 'binary');
+            $response->headers->set('Content-Length', (string)$fileSize); // Indispensable pour que Axios suive la progression
 
             return $response;
         } catch (\Exception $e) {
@@ -52,6 +64,8 @@ class FileController extends AbstractController
             return new Response('Error downloading file: ' . $e->getMessage(), 500);
         }
     }
+
+
 
     #[Route('/api/game/upload', name: "file_upload")]
     public function upload(Request $request)

@@ -44,7 +44,7 @@ class GoogleDriveService
             // Rechercher le fichier par nom
             $parameters = [
                 'q' => "name = '$fileName'",
-                'fields' => 'files(id, name)',
+                'fields' => 'files(id, name, size)', // Inclure la taille du fichier dans la réponse
             ];
 
             // Exécuter la requête de liste des fichiers
@@ -56,17 +56,23 @@ class GoogleDriveService
             }
 
             // Récupérer l'ID du fichier trouvé
-            $fileId = $files->getFiles()[0]->getId();
+            $file = $files->getFiles()[0];
+            $fileId = $file->getId();
+            $fileSize = $file->getSize(); // Taille du fichier
 
             // Télécharger le fichier via son ID en tant que flux
             $response = $this->driveService->files->get($fileId, ['alt' => 'media']);
 
-            // Retourner le flux de données
-            return $response->getBody();
+            // Créer un flux de lecture pour retourner les données
+            $stream = $response->getBody();
+
+            // Retourner un tableau contenant le flux et la taille du fichier
+            return ['stream' => $stream, 'size' => $fileSize];
         } catch (\Exception $e) {
             throw new \Exception("Error downloading file stream: " . $e->getMessage());
         }
     }
+
 
 
     public function listFiles($folderId = null)

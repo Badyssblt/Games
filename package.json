@@ -2,7 +2,6 @@
   "name": "launcher",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "electron": "electron .",
@@ -11,6 +10,7 @@
   },
   "main": "main.js",
   "dependencies": {
+    "axios": "^1.7.7",
     "electron-builder": "^25.1.8",
     "vue": "^3.5.12"
   },

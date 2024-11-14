@@ -1,0 +1,15 @@
+meta {
+  name: Upload File
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/game/upload
+  body: multipartForm
+  auth: none
+}
+
+body:multipart-form {
+  file: @file(/home/badyss/Téléchargements/rpg.jpg)
+}

@@ -1,4 +1,5 @@
 {
+  
   "name": "launcher",
   "private": true,
   "version": "0.0.0",
@@ -10,8 +11,10 @@
   },
   "main": "main.js",
   "dependencies": {
+    "adm-zip": "^0.5.16",
     "axios": "^1.7.7",
     "electron-builder": "^25.1.8",
+    "electron-store": "^10.0.0",
     "vue": "^3.5.12"
   },
   "devDependencies": {

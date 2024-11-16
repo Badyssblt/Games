@@ -1,27 +1,26 @@
 <script setup>
 import Game from "./Game.vue";
 import axios from "axios";
-import {onMounted, ref} from "vue";
+import {inject, onMounted, ref} from "vue";
 
 const games = ref([]);
 
 const getGames = async () => {
   try {
-    console.log(import.meta)
     const response = await axios.get(import.meta.env.VITE_API_URL + "/api/games", {
       headers: {
         "Content-Type": "application/ld+json",
       }
     });
-    games.value = response.data.member;
-    console.log(response.data);
+    console.log(response.data)
+    games.value = response.data;
   }catch (error) {
     console.error(error);
   }
 }
 
-onMounted(() => {
-  getGames();
+onMounted(async () => {
+  await getGames();
 })
 
 

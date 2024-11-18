@@ -20,20 +20,15 @@ class GameImageController extends AbstractController
         $this->uploadHandler = $uploadHandler;
     }
 
-    public function __invoke(Request $request): Response
+    public function __invoke(Game $game, Request $request): Response
     {
-        $game = new Game();
-
-        $game->setName($request->get('name'));
-        $game->setDescription($request->get('description'));
-        $game->setVersion($request->get('version'));
-        $game->setSize($request->get('size'));
-
         $file = $request->files->get('imageFile');
         if ($file) {
             $game->setImageFile($file);
 
             $this->uploadHandler->upload($game, 'imageFile');
+
+            $game->setUpdatedAt(new \DateTimeImmutable('now'));
         }
 
         $this->entityManager->persist($game);

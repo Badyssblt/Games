@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Controller\GameImageController;
 use App\Repository\GameRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -51,13 +53,6 @@ class Game
     #[Groups(['game:read', 'game:write'])]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['game:read', 'game:write'])]
-    private ?string $file = null;
-
-    #[ORM\Column(length: 255)]
-    #[Groups(['game:read', 'game:write'])]
-    private ?string $version = null;
 
     #[ORM\Column]
     #[Groups(['game:read', 'game:write'])]
@@ -77,6 +72,18 @@ class Game
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, Version>
+     */
+    #[ORM\OneToMany(targetEntity: Version::class, mappedBy: 'game', cascade: ['PERSIST', 'REMOVE'])]
+    #[Groups(['game:read'])]
+    private Collection $version;
+
+    public function __construct()
+    {
+        $this->version = new ArrayCollection();
+    }
 
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
@@ -118,29 +125,6 @@ class Game
         return $this;
     }
 
-    public function getFile(): ?string
-    {
-        return $this->file;
-    }
-
-    public function setFile(string $file): static
-    {
-        $this->file = $file;
-
-        return $this;
-    }
-
-    public function getVersion(): ?string
-    {
-        return $this->version;
-    }
-
-    public function setVersion(string $version): static
-    {
-        $this->version = $version;
-
-        return $this;
-    }
 
     public function getSize(): ?string
     {
@@ -188,5 +172,35 @@ class Game
     public function getImageSize(): ?int
     {
         return $this->imageSize;
+    }
+
+    /**
+     * @return Collection<int, Version>
+     */
+    public function getVersion(): Collection
+    {
+        return $this->version;
+    }
+
+    public function addVersion(Version $version): static
+    {
+        if (!$this->version->contains($version)) {
+            $this->version->add($version);
+            $version->setGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVersion(Version $version): static
+    {
+        if ($this->version->removeElement($version)) {
+            // set the owning side to null (unless already changed)
+            if ($version->getGame() === $this) {
+                $version->setGame(null);
+            }
+        }
+
+        return $this;
     }
 }

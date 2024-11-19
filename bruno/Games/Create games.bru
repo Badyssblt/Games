@@ -6,6 +6,19 @@ meta {
 
 post {
   url: {{baseUrl}}/api/games
-  body: none
+  body: multipartForm
   auth: none
+}
+
+body:multipart-form {
+  name: test
+  description: test
+  size: 2
+  version: '''
+    {
+      "name": "string",
+      "file": "string",
+      "game": "https://example.com/"
+    }
+  '''
 }

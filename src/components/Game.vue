@@ -2,7 +2,7 @@
   <div>
     <div class="border border-white/20 p-4 w-96">
       <div class="w-full h-64 overflow-hidden">
-        <img class="w-full h-full object-cover" :src="import.meta.env.VITE_API_URL + '/images/games' + props.game.imageName" alt=""/>
+        <img class="w-full h-full object-cover" :src="imageUrl" alt=""/>
       </div>
       <p class="font-bold my-4">{{ game.name }}</p>
       <p class="text-wrap break-words text-white/60">{{ game.description }}</p>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import {inject, onMounted, ref} from 'vue';
+import {computed, inject, onMounted, ref} from 'vue';
 import axios from 'axios';
 
 const props = defineProps(['game', 'globalProgress']);
@@ -54,7 +54,6 @@ onMounted(async () => {
   const data = await window.electron.loadUserData();
   const downloadedGame = data.games.find(game => game.name === props.game.name);
 
-  console.log(data)
 
   if (downloadedGame && downloadedGame.isDownloaded) {
     isDownloaded.value = true;
@@ -63,6 +62,11 @@ onMounted(async () => {
 
 
 })
+
+const imageUrl = computed(() => {
+  return `${import.meta.env.VITE_API_URL}/images/games/${props.game.imageName}`;
+});
+
 
 const showInfo = () => {
   isShow.value = !isShow.value;
@@ -87,8 +91,7 @@ const startDownload = async () => {
 
   isDownloading.value = true;
   progressBar.value = 0;
-
-  const fileUrl = `${import.meta.env.VITE_API_URL}/api/game/${props.game.file}/download`;
+  const fileUrl = `${import.meta.env.VITE_API_URL}/api/game/${props.game.version[props.game.version.length - 1].file}/download`;
   gameDownload.value = props.game;
 
   try {
@@ -110,9 +113,10 @@ const startDownload = async () => {
 
     const arrayBuffer = response.data;  // Nous avons directement l'ArrayBuffer
 
-    const fileName = props.game.file;
+    const fileName = props.game.version[props.game.version.length - 1].file;
 
     const fullPath = `${folderPath.value[0]}/${fileName}`;
+
 
 
     await window.electron.saveFile(arrayBuffer, fileName, folderPath.value[0]);

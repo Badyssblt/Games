@@ -1,26 +1,28 @@
 <script setup>
 
-const games = ref([]);
-const allGames = ref([]);
+import {version} from "vue";
+
+const versions = ref([]);
+const allVersions = ref([]);
 const searchQuery = ref("");
 
 const {$api} = useNuxtApp();
 const config = useRuntimeConfig();
 
-const getGames = async () => {
+const getVersions = async () => {
   try {
-    const response = await $api.get('/api/games');
-    games.value = response.data;
-    allGames.value = response.data;
+    const response = await $api.get('/api/versions');
+    versions.value = response.data;
+    allVersions.value = response.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-const deleteGame = async (id) => {
+const deleteVersion = async (id) => {
   try {
-    await $api.delete(`/api/games/${id}`);
-    await getGames();
+    await $api.delete(`/api/versions/${id}`);
+    await getVersions();
   }catch (e) {
   }
 }
@@ -53,27 +55,27 @@ const levenshteinDistance = (a, b) => {
   return matrix[b.length][a.length];
 };
 
-const isSimilar = (a, b, threshold = 3) => {
+const isSimilar = (a, b, threshold = 15) => {
   const distance = levenshteinDistance(a.toLowerCase(), b.toLowerCase());
   return distance <= threshold;
 };
 
 const search = () => {
   if (searchQuery.value === "") {
-    games.value = allGames.value;
+    versions.value = [...allVersions.value];
   } else {
-    games.value = allGames.value.filter((game) =>
-        isSimilar(game.name, searchQuery.value)
+    versions.value = allVersions.value.filter((version) =>
+        isSimilar(version.name, searchQuery.value)
     );
+
   }
 };
-
 watch(searchQuery, () => {
   search();
 });
 
 onMounted(async () => {
-  await getGames();
+  await getVersions();
 });
 
 const navRows = [
@@ -82,24 +84,24 @@ const navRows = [
     "link": "/dashboard",
   },
   {
-    "name": "Jeux",
-    "link": "/dashboard/games",
+    "name": "Versions",
+    "link": "/dashboard/versions",
   }
 ];
 </script>
 
 <template>
   <div class="flex flex-col min-h-screen">
-    <TopContentInfo :type="'games'" :navRows="navRows" class="" :pageType="'Liste des'"/>
+    <TopContentInfo :type="'versions'" :navRows="navRows" class="" :pageType="'Liste des'"/>
     <div class="mt-6 border border-white/20 rounded-md pb-8">
       <div class="flex justify-between items-end m-6">
-        <form class="w-96">
+        <form class="w-96" @submit.prevent="">
           <Input :label="'Rechercher un jeux'" v-model="searchQuery"/>
         </form>
         <div>
           <NuxtLink to="/dashboard/games/create"
                     class="px-6 py-2 bg-blue-600 border border-transparent transition-all rounded-md hover:bg-transparent hover:border-blue-600 cursor-pointer hover:text-blue-400">
-            Créer un jeux
+            Créer une version
           </NuxtLink>
         </div>
       </div>
@@ -109,25 +111,21 @@ const navRows = [
           <thead>
           <tr class="h-full">
             <th class="py-2 text-left">ID</th>
-            <th class="px-4 py-2 text-left">Image</th>
             <th class="px-4 py-2 text-left">Nom</th>
-            <th class="px-4 py-2 text-left">Description</th>
-            <th class="px-4 py-2 text-left">Version</th>
-            <th class="px-4 py-2 text-left">Taille</th>
+            <th class="px-4 py-2 text-left">Fichier</th>
+            <th class="px-4 py-2 text-left">Jeux</th>
             <th class="px-4 py-2 text-left">Action</th>
           </tr>
           </thead>
           <tbody>
-          <tr v-for="game in games" :key="game.id" class="border-b border-white/20 w-fit h-full">
-            <td class="py-2">{{ game.id }}</td>
-            <td><img class="w-24 py-4" :src="`${config.public.API_URL}/images/games/${game.imageName}`" alt=""></td>
-            <td class="px-4 py-2">{{ game.name }}</td>
-            <td class="px-4 py-2">{{ game.description }}</td>
-            <td class="px-4 py-2 underline underline-offset-4"><NuxtLink :to="'/dashboard/versions/' + game.version[game.version.length - 1].id">{{ game.version[game.version.length - 1]?.name || 'Non spécifiée' }}</NuxtLink></td>
-            <td class="px-4 py-2">{{ game.size || 'Non spécifiée' }}</td>
+          <tr v-for="version in versions" :key="version.id" class="border-b border-white/20 w-fit h-full">
+            <td class="py-2">{{ version.id }}</td>
+            <td class="px-4 py-2">{{ version.name }}</td>
+            <td class="px-4 py-2">{{ version.file }}</td>
+            <td class="px-4 py-2 underline underline-offset-4"><NuxtLink :to="'/dashboard/games/'">{{ version.game }}</NuxtLink></td>
             <td class="flex h-full items-center gap-4">
               <button class="bg-green-900 p-2 rounded-md flex justify-center items-center"
-                      @click="navigateTo(`/dashboard/games/${game.id}`)">
+                      @click="navigateTo(`/dashboard/versions/${version.id}`)">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round"
@@ -135,7 +133,7 @@ const navRows = [
                 </svg>
               </button>
               <button class="bg-red-900 p-2 rounded-md flex justify-center items-center"
-                      @click="deleteGame(game.id)">
+                      @click="deleteVersion(version.id)">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round"

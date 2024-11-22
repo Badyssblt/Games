@@ -11,7 +11,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      API_URL: 'http://localhost:8215'
+      API_URL: 'http://localhost:8215',
+      // API_URL: "https://orbital.badyssblilita.fr/v1"
     }
   },
 

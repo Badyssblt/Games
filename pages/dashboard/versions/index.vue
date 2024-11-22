@@ -1,6 +1,6 @@
 <script setup >
 useHead({
-  title: 'Tous les jeux',
+  title: 'Toutes les versions',
 })
 
 definePageMeta({
@@ -11,8 +11,8 @@ definePageMeta({
 
 <template>
   <div class="flex">
-    <Aside :selected="'games'" />
-    <GamesContent class="flex-1 p-8"/>
+    <Aside :selected="'versions'" />
+    <VersionContent class="flex-1 p-8"/>
   </div>
 </template>
 

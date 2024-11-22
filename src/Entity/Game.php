@@ -26,17 +26,23 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 )]
 #[Post(
     inputFormats: ['multipart' => ['multipart/form-data']],
+    security: "is_granted('ROLE_ADMIN')",
 )]
 #[Post(
     inputFormats: ['multipart' => ['multipart/form-data']],
     controller: GameImageController::class,
-    uriTemplate: "/games/{id}/image"
+    uriTemplate: "/games/{id}/image",
+    security: "is_granted('ROLE_ADMIN')",
+
 )]
 #[Get()]
 #[GetCollection()]
 #[Patch(
+    security: "is_granted('ROLE_ADMIN')",
 )]
-#[Delete()]
+#[Delete(
+    security: "is_granted('ROLE_ADMIN')",
+)]
 class Game
 {
     #[ORM\Id]

@@ -14,13 +14,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class FileController extends AbstractController
 {
-    private BackblazeService $backblazeService;
+
     private GoogleDriveService $googleDriveService;
 
     public function __construct(BackblazeService $backblazeService)
     {
-        // Injection des services via le constructeur
-        $this->backblazeService = $backblazeService;
         $this->googleDriveService = new GoogleDriveService;
     }
 

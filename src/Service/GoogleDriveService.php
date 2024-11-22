@@ -12,24 +12,20 @@ class GoogleDriveService
 
     public function __construct()
     {
-        // Créez un client Google pour le compte de service
         $this->client = new Google_Client();
-        $this->client->setAuthConfig('/var/www/LauncherAPI/credentials.json'); // Le fichier JSON de la clé du compte de service
+        $this->client->setAuthConfig($_ENV['DIRECTORY_CREDENTIALS']);
         $this->client->addScope(Google_Service_Drive::DRIVE);
 
-        // Initialisez le service Google Drive avec le client
         $this->driveService = new Google_Service_Drive($this->client);
     }
 
-    // Téléchargez un fichier depuis Google Drive en utilisant un ID de fichier
     public function downloadFile($fileId)
     {
         try {
             $response = $this->driveService->files->get($fileId, [
-                'alt' => 'media', // Pour récupérer le contenu du fichier
+                'alt' => 'media',
             ]);
 
-            // Récupérer le contenu du fichier
             $content = $response->getBody()->getContents();
 
             return $content;

@@ -28,6 +28,7 @@ export const useAuth = defineStore(
     persist: {
       storage: persistedState.cookiesWithOptions({
         sameSite: "strict",
+          httpOnly: true
       }),
     },
   }

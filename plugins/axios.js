@@ -11,7 +11,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         timeout: 10000,
         headers: {
             'Content-Type': 'application/ld+json'
-        }
+        },
+        withCredentials: true
     });
 
     const isTokenValid = (token) => {

@@ -23,16 +23,8 @@ const login = async () => {
       username: email.value,
       password: password.value,
     });
-    useCookie("token", {
-      value: response.data.token,
-      httpOnly: true,
-      sameSite: "Strict"
-    })
-    store.token = response.data.token;
-    store.authenticate({
-      token: response.data.token,
-    })
-
+    // Force re-render after login
+    store.token = "granted";
     navigateTo('/dashboard')
   }catch(e) {
     if(e.status === 401){

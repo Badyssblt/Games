@@ -3,9 +3,11 @@ export const useAuth = defineStore(
   "auth",
   () => {
     const user = ref(null);
-    const token = ref("");
+    const token = ref(useCookie("token"));
 
-    const isAuthenticated = computed(() => user.value !== null);
+      const isAuthenticated = computed(() => {
+          return token.value !== null && token.value !== undefined;
+      });
 
     const authenticate = (newUser) => {
       user.value = newUser;
@@ -28,7 +30,6 @@ export const useAuth = defineStore(
     persist: {
       storage: persistedState.cookiesWithOptions({
         sameSite: "strict",
-          httpOnly: true
       }),
     },
   }
